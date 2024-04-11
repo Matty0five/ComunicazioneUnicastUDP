@@ -28,7 +28,7 @@ class UDPServer{
                 String daSpedire = ricevuto.toUpperCase();
                 bufferOUT = daSpedire.getBytes();
                 // invio del datagramma
-                DatagramPacket sendPacket = new DatagramPacket(bufferOUT, bufferOUT.length, portaClient);
+                DatagramPacket sendPacket = new DatagramPacket(bufferOUT, bufferOUT.length, IPClient, portaClient);
                 serverSocket.send(sendPacket);
                 // controllo termine esecuzione del server
                 if(ricevuto.equals("fine")){
