@@ -6,31 +6,41 @@ public class UDPClient {
         try {
             int portaServer = 6789;                 // porta del server
             InetAddress IPServer = InetAddress.getByName("localhost");
+            boolean connesso = true;
             byte[] bufferIN = new byte[1024];       // buffer spedizione e ricezione
             byte[] bufferOUT = new byte[1024];
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
             // creazione del socket
             DatagramSocket clientSocket = new DatagramSocket();
-            System.out.println("Client pronto - inserisci un dato da inviare:");
+            System.out.println("Client pronto.");
 
-            // preparazione del messaggio da spedire
-            String daSpedire = input.readLine();
-            bufferOUT = daSpedire.getBytes();
+            while(connesso){
+                System.out.print("Inserisci una scritta da far mimare: ");
 
-            // trasmissione del dato al server
-            DatagramPacket sendPacket = new DatagramPacket(bufferOUT, bufferOUT.length, IPServer, portaServer);
-            clientSocket.send(sendPacket);
+                // preparazione del messaggio da spedire
+                String daSpedire = input.readLine();
+                bufferOUT = daSpedire.getBytes();
 
-            // ricezione del dato dal server
-            DatagramPacket receivePacket = new DatagramPacket(bufferIN, bufferIN.length);
-            clientSocket.receive(receivePacket);
-            String ricevuto = new String(receivePacket.getData());
+                // trasmissione del dato al server
+                DatagramPacket sendPacket = new DatagramPacket(bufferOUT, bufferOUT.length, IPServer, portaServer);
+                clientSocket.send(sendPacket);
 
-            // elaborazione dei dati ricevuti
-            int numCaratteri = receivePacket.getLength();
-            ricevuto = ricevuto.substring(0, numCaratteri); // elimina i caratteri in eccesso
-            System.out.println("Dal SERVER: " + ricevuto);
+                // ricezione del dato dal server
+                DatagramPacket receivePacket = new DatagramPacket(bufferIN, bufferIN.length);
+                clientSocket.receive(receivePacket);
+                String ricevuto = new String(receivePacket.getData());
+
+                // elaborazione dei dati ricevuti
+                int numCaratteri = receivePacket.getLength();
+                ricevuto = ricevuto.substring(0, numCaratteri); // elimina i caratteri in eccesso
+                System.out.println("Dal SERVER: " + ricevuto);
+
+                if(daSpedire.equals("fine")){
+                    System.out.println("Mi disconnetto dal server...");
+                    connesso = false;
+                }
+            }
 
             //termine elaborazione
             clientSocket.close();
